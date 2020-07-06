@@ -1,0 +1,64 @@
+class Solution:
+    def longestCommonPrefix(self, strs) -> str:
+        if strs == []:
+            return ""
+        if len(strs) == 1:
+            return strs[0]
+        min_len = len(strs[0])
+        aim_str = strs[0]
+        for i in strs:
+            if 0 < len(i) < min_len:
+                min_len = len(i)
+                aim_str = i
+        strs.remove(aim_str) #到这里都是取出最短的字符串，并且在列表中去掉这个字符串
+        if aim_str == "":
+            return ""
+        sub_str = aim_str[0] #取最短字符串的第一个字符
+        total_len = len(strs)#记录下需要比较的字符串个数
+        sub_len = 0
+        success = 0#需要记录下成功的次数，用成功数与需要比较的字符串做对比，这样可以得到拿到的是不是公共字符串
+        while len(aim_str) > 0:
+            aim_str = aim_str[1:]
+            for i in strs:
+                if sub_str == i[:success+1]: #不能只用in，不然会由["ca","a"]这种情况的缺失
+                    sub_len += 1 #每次拿到匹配的就+1
+                    continue
+                else:
+                    break
+            if sub_len == total_len:
+                if len(aim_str) == 0:
+                    sub_str += ""
+                else:
+                    sub_str += aim_str[0]
+                #aim_str = aim_str[1:]
+                sub_len = 0
+                success += 1
+            else:
+                sub_str = sub_str[:-1]
+                break
+
+        if success >= 1:
+            return sub_str
+        else:
+            return ""
+class Solution1(object):
+    def longestCommonPrefix(self, strs):
+        ans = ''
+        for i in zip(*strs):
+            if len(set(i)) == 1:
+                ans += i[0]
+            else:
+                break
+        return ans
+if __name__ == "__main__":
+    a = Solution1()
+    b = a.longestCommonPrefix(["flower","flow","flight"])
+    print(b)
+"""
+失败过的用例：（1）"":添加了第三行、第四行代码
+（2）[""]：添加了第十四行、第十五行代码
+(3)["c","c"]添加了36-38行
+(4)["ca","a"]：修改了23行，由之前的sub_str in i改成sub_str == i[:success+1]
+（5）["a"] ：添加了第五行、第六行代码
+"""
+# https://leetcode-cn.com/problems/longest-common-prefix/submissions/
